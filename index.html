@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADU Pre-Qualifier — RC Remodeling & Construction</title>
+<link rel="manifest" href="#">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── DESIGN TOKENS ── */
+:root {
+  --bg: #0b0f0e;
+  --surface: #111715;
+  --surface2: #192420;
+  --border: #2a3632;
+  --gold: #c8a951;
+  --gold-dim: #8a6e2f;
+  --gold-glow: rgba(200,169,81,0.12);
+  --text: #e8ede6;
+  --text-muted: #7a9188;
+  --text-dim: #4a6158;
+  --accent: #3d7a5e;
+  --danger: #c0392b;
+  --radius: 4px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+background: var(–bg);
+color: var(–text);
+font-family: ‘Outfit’, sans-serif;
+font-weight: 400;
+min-height: 100vh;
+overflow-x: hidden;
+}
+
+/* ── BACKGROUND TEXTURE ── */
+body::before {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image:
+radial-gradient(ellipse 80% 50% at 50% -10%, rgba(200,169,81,0.07) 0%, transparent 70%),
+repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(255,255,255,0.015) 79px, rgba(255,255,255,0.015) 80px),
+repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,0.015) 79px, rgba(255,255,255,0.015) 80px);
+pointer-events: none;
+z-index: 0;
+}
+
+/* ── HEADER ── */
+.site-header {
+position: relative;
+z-index: 10;
+padding: 2rem 2rem 0;
+display: flex;
+flex-direction: column;
+align-items: center;
+text-align: center;
+}
+.brand-eyebrow {
+font-size: 0.65rem;
+letter-spacing: 0.3em;
+text-transform: uppercase;
+color: var(–gold);
+margin-bottom: 0.6rem;
+font-weight: 500;
+}
+.brand-name {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: clamp(1.4rem, 4vw, 2rem);
+font-weight: 700;
+color: var(–text);
+letter-spacing: 0.05em;
+}
+.brand-divider {
+width: 60px;
+height: 1px;
+background: linear-gradient(90deg, transparent, var(–gold), transparent);
+margin: 1.2rem auto 0;
+}
+
+/* ── HERO ── */
+.hero {
+position: relative;
+z-index: 10;
+text-align: center;
+padding: 3rem 1.5rem 2.5rem;
+max-width: 680px;
+margin: 0 auto;
+}
+.hero-tag {
+display: inline-block;
+font-size: 0.62rem;
+letter-spacing: 0.25em;
+text-transform: uppercase;
+color: var(–gold);
+border: 1px solid var(–gold-dim);
+padding: 0.3rem 0.9rem;
+margin-bottom: 1.5rem;
+}
+.hero-title {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: clamp(2.2rem, 6vw, 3.8rem);
+font-weight: 700;
+line-height: 1.05;
+margin-bottom: 1rem;
+}
+.hero-title em { font-style: italic; color: var(–gold); }
+.hero-sub {
+font-size: 1rem;
+color: var(–text-muted);
+line-height: 1.7;
+max-width: 500px;
+margin: 0 auto 2rem;
+font-weight: 300;
+}
+.hero-features {
+display: flex;
+justify-content: center;
+gap: 2rem;
+flex-wrap: wrap;
+margin-bottom: 0.5rem;
+}
+.hero-feature {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+font-size: 0.82rem;
+color: var(–text-muted);
+}
+.hero-feature-dot {
+width: 6px;
+height: 6px;
+border-radius: 50%;
+background: var(–gold);
+flex-shrink: 0;
+}
+
+/* ── PROGRESS ── */
+.progress-wrap {
+position: relative;
+z-index: 10;
+max-width: 600px;
+margin: 0 auto 2rem;
+padding: 0 1.5rem;
+}
+.progress-bar-bg {
+height: 2px;
+background: var(–border);
+border-radius: 2px;
+overflow: hidden;
+}
+.progress-bar-fill {
+height: 100%;
+background: linear-gradient(90deg, var(–gold-dim), var(–gold));
+border-radius: 2px;
+transition: width 0.5s ease;
+width: 0%;
+}
+.progress-labels {
+display: flex;
+justify-content: space-between;
+margin-top: 0.6rem;
+}
+.progress-step-label {
+font-size: 0.6rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–text-dim);
+transition: color 0.3s;
+}
+.progress-step-label.active { color: var(–gold); }
+.progress-step-label.done { color: var(–accent); }
+
+/* ── FORM WRAPPER ── */
+.form-outer {
+position: relative;
+z-index: 10;
+max-width: 620px;
+margin: 0 auto;
+padding: 0 1.5rem 4rem;
+}
+
+/* ── STEP CARD ── */
+.step-card {
+background: var(–surface);
+border: 1px solid var(–border);
+padding: 2.5rem;
+position: relative;
+display: none;
+animation: fadeUp 0.4s ease;
+}
+.step-card.active { display: block; }
+.step-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 2px;
+background: linear-gradient(90deg, var(–gold-dim), var(–gold), var(–gold-dim));
+}
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(16px); }
+to   { opacity: 1; transform: translateY(0); }
+}
+.step-num {
+font-size: 0.6rem;
+letter-spacing: 0.25em;
+text-transform: uppercase;
+color: var(–gold);
+margin-bottom: 0.5rem;
+font-weight: 500;
+}
+.step-title {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.7rem;
+font-weight: 600;
+margin-bottom: 0.4rem;
+line-height: 1.2;
+}
+.step-desc {
+font-size: 0.87rem;
+color: var(–text-muted);
+margin-bottom: 2rem;
+line-height: 1.6;
+font-weight: 300;
+}
+
+/* ── FIELD ── */
+.field { margin-bottom: 1.4rem; }
+.field label {
+display: block;
+font-size: 0.78rem;
+font-weight: 500;
+letter-spacing: 0.05em;
+text-transform: uppercase;
+color: var(–text-muted);
+margin-bottom: 0.5rem;
+}
+.field input,
+.field select,
+.field textarea {
+width: 100%;
+background: var(–surface2);
+border: 1px solid var(–border);
+color: var(–text);
+font-family: ‘Outfit’, sans-serif;
+font-size: 0.95rem;
+padding: 0.8rem 1rem;
+border-radius: var(–radius);
+outline: none;
+transition: border-color 0.2s, box-shadow 0.2s;
+appearance: none;
+-webkit-appearance: none;
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+border-color: var(–gold-dim);
+box-shadow: 0 0 0 3px var(–gold-glow);
+}
+.field select {
+background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ viewBox=‘0 0 12 8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=’%238a6e2f’ stroke-width=‘1.5’ fill=‘none’ stroke-linecap=‘round’/%3E%3C/svg%3E”);
+background-repeat: no-repeat;
+background-position: right 1rem center;
+padding-right: 2.5rem;
+cursor: pointer;
+}
+.field select option { background: #1a2420; }
+.field textarea { resize: vertical; min-height: 80px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+/* ── CHIP SELECTORS ── */
+.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+.chip {
+border: 1px solid var(–border);
+background: var(–surface2);
+color: var(–text-muted);
+font-family: ‘Outfit’, sans-serif;
+font-size: 0.82rem;
+padding: 0.45rem 0.9rem;
+border-radius: 2px;
+cursor: pointer;
+transition: all 0.15s;
+user-select: none;
+white-space: nowrap;
+-webkit-tap-highlight-color: transparent;
+}
+.chip:hover { border-color: var(–gold-dim); color: var(–text); }
+.chip.selected {
+background: var(–gold-glow);
+border-color: var(–gold);
+color: var(–gold);
+font-weight: 500;
+}
+
+/* ── BUTTONS ── */
+.btn-row {
+display: flex;
+gap: 0.75rem;
+margin-top: 2rem;
+align-items: center;
+}
+.btn {
+font-family: ‘Outfit’, sans-serif;
+font-size: 0.85rem;
+font-weight: 600;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+padding: 0.85rem 2rem;
+border: none;
+border-radius: var(–radius);
+cursor: pointer;
+transition: all 0.2s;
+}
+.btn-primary { background: var(–gold); color: #0b0f0e; flex: 1; }
+.btn-primary:hover { background: #e0bc5f; transform: translateY(-1px); }
+.btn-primary:disabled { background: var(–gold-dim); cursor: not-allowed; transform: none; opacity: 0.6; }
+.btn-ghost {
+background: transparent;
+color: var(–text-muted);
+border: 1px solid var(–border);
+padding: 0.85rem 1.25rem;
+}
+.btn-ghost:hover { border-color: var(–text-muted); color: var(–text); }
+
+/* ── CONTACT GATE ── */
+.gate-card {
+background: var(–surface);
+border: 1px solid var(–gold-dim);
+padding: 2.5rem;
+display: none;
+animation: fadeUp 0.4s ease;
+position: relative;
+}
+.gate-card::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 2px;
+background: linear-gradient(90deg, var(–gold-dim), var(–gold), var(–gold-dim));
+}
+.gate-card.active { display: block; }
+.gate-preview {
+background: var(–surface2);
+border: 1px solid var(–border);
+padding: 1.25rem;
+margin-bottom: 2rem;
+position: relative;
+overflow: hidden;
+}
+.gate-preview-blur {
+filter: blur(4px);
+opacity: 0.5;
+pointer-events: none;
+user-select: none;
+font-size: 0.85rem;
+line-height: 1.8;
+color: var(–text-muted);
+}
+.gate-preview-overlay {
+position: absolute;
+inset: 0;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+background: rgba(11,15,14,0.5);
+gap: 0.5rem;
+}
+.gate-lock-icon { font-size: 1.5rem; }
+.gate-lock-text {
+font-size: 0.78rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–gold);
+font-weight: 500;
+}
+
+/* ── RESULT ── */
+.result-card {
+background: var(–surface);
+border: 1px solid var(–border);
+display: none;
+animation: fadeUp 0.5s ease;
+position: relative;
+overflow: hidden;
+}
+.result-card.active { display: block; }
+.result-header {
+background: var(–surface2);
+padding: 2rem 2.5rem;
+border-bottom: 1px solid var(–border);
+position: relative;
+}
+.result-header::after {
+content: ‘’;
+position: absolute;
+bottom: 0; left: 0; right: 0;
+height: 1px;
+background: linear-gradient(90deg, transparent, var(–gold-dim), transparent);
+}
+.result-score-row {
+display: flex;
+align-items: center;
+gap: 1.5rem;
+margin-bottom: 1rem;
+}
+.result-score-circle {
+width: 72px;
+height: 72px;
+border-radius: 50%;
+border: 2px solid var(–gold);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+background: var(–gold-glow);
+}
+.result-score-num {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.8rem;
+font-weight: 700;
+color: var(–gold);
+line-height: 1;
+}
+.result-score-label {
+font-size: 0.5rem;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(–gold-dim);
+}
+.result-verdict { flex: 1; }
+.result-verdict-tag {
+font-size: 0.6rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(–gold);
+margin-bottom: 0.3rem;
+font-weight: 500;
+}
+.result-verdict-title {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.5rem;
+font-weight: 600;
+line-height: 1.2;
+}
+.result-body { padding: 2rem 2.5rem; }
+.result-section { margin-bottom: 1.75rem; }
+.result-section-title {
+font-size: 0.65rem;
+letter-spacing: 0.2em;
+text-transform: uppercase;
+color: var(–gold);
+margin-bottom: 0.75rem;
+font-weight: 500;
+padding-bottom: 0.5rem;
+border-bottom: 1px solid var(–border);
+}
+.result-text {
+font-size: 0.92rem;
+line-height: 1.8;
+color: var(–text-muted);
+}
+.result-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+.result-pill {
+background: var(–surface2);
+border: 1px solid var(–border);
+color: var(–text-muted);
+font-size: 0.78rem;
+padding: 0.3rem 0.75rem;
+border-radius: 2px;
+}
+.result-pill.highlight {
+border-color: var(–gold-dim);
+color: var(–gold);
+background: var(–gold-glow);
+}
+.result-disclaimer {
+background: var(–surface2);
+border-left: 3px solid var(–gold-dim);
+padding: 1rem 1.25rem;
+font-size: 0.78rem;
+color: var(–text-dim);
+line-height: 1.6;
+margin-top: 1.5rem;
+}
+.result-cta {
+background: linear-gradient(135deg, var(–surface2), var(–surface));
+border-top: 1px solid var(–border);
+padding: 2rem 2.5rem;
+text-align: center;
+}
+.result-cta-title {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.4rem;
+margin-bottom: 0.5rem;
+}
+.result-cta-sub {
+font-size: 0.85rem;
+color: var(–text-muted);
+margin-bottom: 1.5rem;
+}
+.result-contact-row {
+display: flex;
+justify-content: center;
+gap: 1rem;
+flex-wrap: wrap;
+margin-top: 1rem;
+}
+.result-contact-item {
+display: flex;
+align-items: center;
+gap: 0.4rem;
+font-size: 0.85rem;
+color: var(–gold);
+text-decoration: none;
+}
+.result-contact-item:hover { color: #e0bc5f; }
+
+/* ── LOADING ── */
+.loading-card {
+background: var(–surface);
+border: 1px solid var(–border);
+padding: 4rem 2.5rem;
+text-align: center;
+display: none;
+}
+.loading-card.active { display: block; }
+.loader {
+width: 48px;
+height: 48px;
+border: 2px solid var(–border);
+border-top-color: var(–gold);
+border-radius: 50%;
+animation: spin 0.8s linear infinite;
+margin: 0 auto 1.5rem;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-title {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.4rem;
+margin-bottom: 0.5rem;
+}
+.loading-sub { font-size: 0.85rem; color: var(–text-muted); }
+.loading-steps { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.loading-step { font-size: 0.78rem; color: var(–text-dim); transition: color 0.3s; }
+.loading-step.active { color: var(–gold); }
+.loading-step.done { color: var(–accent); }
+
+/* ── API KEY MODAL ── */
+.modal-overlay {
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.85);
+z-index: 100;
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 1.5rem;
+}
+.modal {
+background: var(–surface);
+border: 1px solid var(–gold-dim);
+padding: 2.5rem;
+max-width: 480px;
+width: 100%;
+position: relative;
+}
+.modal::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 2px;
+background: linear-gradient(90deg, var(–gold-dim), var(–gold), var(–gold-dim));
+}
+.modal-title {
+font-family: ‘Cormorant Garamond’, serif;
+font-size: 1.5rem;
+margin-bottom: 0.5rem;
+}
+.modal-desc { font-size: 0.85rem; color: var(–text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
+.modal-note { font-size: 0.75rem; color: var(–text-dim); margin-top: 0.75rem; line-height: 1.5; }
+
+/* ── FOOTER ── */
+.site-footer {
+position: relative;
+z-index: 10;
+text-align: center;
+padding: 2rem;
+font-size: 0.72rem;
+color: var(–text-dim);
+letter-spacing: 0.05em;
+border-top: 1px solid var(–border);
+margin-top: 2rem;
+}
+.site-footer a { color: var(–gold); text-decoration: none; }
+
+/* ── ERROR ── */
+.error-msg {
+background: rgba(192,57,43,0.1);
+border: 1px solid rgba(192,57,43,0.3);
+color: #e07070;
+padding: 0.75rem 1rem;
+font-size: 0.82rem;
+margin-top: 0.75rem;
+display: none;
+}
+
+/* ── NOTIFICATION BANNER ── */
+.notify-banner {
+background: rgba(61,122,94,0.15);
+border: 1px solid var(–accent);
+color: var(–accent);
+padding: 0.75rem 1rem;
+font-size: 0.82rem;
+margin-top: 0.75rem;
+display: none;
+text-align: center;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 520px) {
+.step-card, .gate-card, .result-body, .result-cta { padding: 1.75rem 1.25rem; }
+.result-header { padding: 1.5rem 1.25rem; }
+.field-row { grid-template-columns: 1fr; }
+.hero-features { gap: 1rem; }
+.result-score-row { flex-direction: column; text-align: center; }
+}
+</style>
+
+</head>
+<body>
+
+<!-- API KEY MODAL -->
+
+<div class="modal-overlay" id="apiModal">
+  <div class="modal">
+    <div class="step-num">Setup Required</div>
+    <div class="modal-title">Enter Your Anthropic API Key</div>
+    <div class="modal-desc">This app uses AI to analyze your property and generate your ADU overview. Your key is stored only in this browser session and never sent anywhere except Anthropic's servers.</div>
+    <div class="field">
+      <label>Anthropic API Key</label>
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-..." autocomplete="off">
+    </div>
+    <div class="error-msg" id="apiKeyError" style="display:none;">Please enter a valid API key starting with sk-ant-</div>
+    <button class="btn btn-primary" style="width:100%; margin-top:0.5rem;" onclick="saveApiKey()">Continue</button>
+    <div class="modal-note">💡 Get your key at console.anthropic.com · Your key is never stored permanently</div>
+  </div>
+</div>
+
+<!-- HEADER -->
+
+<header class="site-header">
+  <div class="brand-eyebrow">Powered by AI</div>
+  <div class="brand-name">RC REMODELING & CONSTRUCTION</div>
+  <div class="brand-divider"></div>
+</header>
+
+<!-- HERO -->
+
+<section class="hero">
+  <div class="hero-tag">Free ADU Assessment</div>
+  <h1 class="hero-title">Find Out If Your Property<br>Qualifies for an <em>ADU</em></h1>
+  <p class="hero-sub">Answer 6 quick questions and get a personalized AI-powered overview of your ADU potential — in under 2 minutes.</p>
+  <div class="hero-features">
+    <div class="hero-feature"><div class="hero-feature-dot"></div><span>No cost to you</span></div>
+    <div class="hero-feature"><div class="hero-feature-dot"></div><span>Instant results</span></div>
+    <div class="hero-feature"><div class="hero-feature-dot"></div><span>Expert follow-up</span></div>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+
+<div class="progress-wrap">
+  <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+  <div class="progress-labels">
+    <span class="progress-step-label" id="pl0">Property</span>
+    <span class="progress-step-label" id="pl1">Goals</span>
+    <span class="progress-step-label" id="pl2">Project</span>
+    <span class="progress-step-label" id="pl3">Financing</span>
+    <span class="progress-step-label" id="pl4">Timeline</span>
+    <span class="progress-step-label" id="pl5">Contact</span>
+    <span class="progress-step-label" id="pl6">Result</span>
+  </div>
+</div>
+
+<!-- FORM -->
+
+<div class="form-outer">
+
+  <!-- STEP 1: PROPERTY -->
+
+  <div class="step-card active" id="step0">
+    <div class="step-num">Step 1 of 5 — Property Info</div>
+    <div class="step-title">Tell us about your property</div>
+    <div class="step-desc">We'll use this to assess what's possible based on your location and lot.</div>
+
+```
+<div class="field">
+  <label>Property Address *</label>
+  <input type="text" id="address" placeholder="123 Main St, Los Angeles, CA 90001" autocomplete="street-address">
+</div>
+<div class="field-row">
+  <div class="field">
+    <label>Property Type *</label>
+    <select id="propType">
+      <option value="">Select type</option>
+      <option>Single-Family Home</option>
+      <option>Duplex / Multi-unit</option>
+      <option>Condo / Townhome</option>
+      <option>Commercial Property</option>
+      <option>Not sure</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Do you own the property? *</label>
+    <select id="ownership">
+      <option value="">Select</option>
+      <option>Yes, I own it</option>
+      <option>I'm in escrow / buying soon</option>
+      <option>No / Renting</option>
+    </select>
+  </div>
+</div>
+<div class="field">
+  <label>Approximate Lot Size</label>
+  <select id="lotSize">
+    <option value="">Select range (or estimate)</option>
+    <option>Under 4,000 sq ft</option>
+    <option>4,000 – 6,000 sq ft</option>
+    <option>6,000 – 10,000 sq ft</option>
+    <option>Over 10,000 sq ft</option>
+    <option>Not sure</option>
+  </select>
+</div>
+<div class="field">
+  <label>Existing garage or backyard structure?</label>
+  <div class="chips" id="structureChips">
+    <div class="chip" data-val="Detached garage">Detached garage</div>
+    <div class="chip" data-val="Attached garage">Attached garage</div>
+    <div class="chip" data-val="Storage structure">Storage structure</div>
+    <div class="chip" data-val="No existing structure">No existing structure</div>
+    <div class="chip" data-val="Not sure">Not sure</div>
+  </div>
+</div>
+<div class="btn-row">
+  <button class="btn btn-primary" onclick="nextStep(0)">Continue →</button>
+</div>
+<div class="error-msg" id="err0">Please fill in the required fields above.</div>
+```
+
+  </div>
+
+  <!-- STEP 2: GOALS -->
+
+  <div class="step-card" id="step1">
+    <div class="step-num">Step 2 of 5 — Your Goals</div>
+    <div class="step-title">What's motivating this ADU?</div>
+    <div class="step-desc">Understanding your goal helps us tailor the overview to what matters most to you.</div>
+
+```
+<div class="field">
+  <label>Primary Goal *</label>
+  <div class="chips" id="goalChips">
+    <div class="chip" data-val="Generate rental income">Generate rental income</div>
+    <div class="chip" data-val="House a family member">House a family member</div>
+    <div class="chip" data-val="Increase property value">Increase property value</div>
+    <div class="chip" data-val="Personal / home office use">Personal / home office use</div>
+    <div class="chip" data-val="Multiple goals">Multiple of the above</div>
+  </div>
+</div>
+<div class="field">
+  <label>If rental income — target monthly rent?</label>
+  <select id="rentTarget">
+    <option value="">Select range (optional)</option>
+    <option>$1,500 – $2,000/mo</option>
+    <option>$2,000 – $2,500/mo</option>
+    <option>$2,500 – $3,500/mo</option>
+    <option>$3,500+/mo</option>
+    <option>Not sure yet</option>
+    <option>N/A — not for rental</option>
+  </select>
+</div>
+<div class="field">
+  <label>Type of ADU you're imagining?</label>
+  <div class="chips" id="aduTypeChips">
+    <div class="chip" data-val="Detached (backyard)">Detached (backyard)</div>
+    <div class="chip" data-val="Garage conversion">Garage conversion</div>
+    <div class="chip" data-val="Attached addition">Attached addition</div>
+    <div class="chip" data-val="Junior ADU (JADU)">Junior ADU (JADU)</div>
+    <div class="chip" data-val="Open to recommendations">Open to recommendations</div>
+  </div>
+</div>
+<div class="btn-row">
+  <button class="btn btn-ghost" onclick="prevStep(1)">← Back</button>
+  <button class="btn btn-primary" onclick="nextStep(1)">Continue →</button>
+</div>
+<div class="error-msg" id="err1">Please select your primary goal.</div>
+```
+
+  </div>
+
+  <!-- STEP 3: PROJECT DETAILS -->
+
+  <div class="step-card" id="step2">
+    <div class="step-num">Step 3 of 5 — Project Details</div>
+    <div class="step-title">What are you envisioning?</div>
+    <div class="step-desc">Give us a sense of the unit so we can assess what's realistic for your lot.</div>
+
+```
+<div class="field-row">
+  <div class="field">
+    <label>Bedrooms</label>
+    <select id="bedrooms">
+      <option value="">Select</option>
+      <option>Studio</option>
+      <option>1 Bedroom</option>
+      <option>2 Bedrooms</option>
+      <option>3 Bedrooms</option>
+      <option>Not sure yet</option>
+    </select>
+  </div>
+  <div class="field">
+    <label>Desired Size</label>
+    <select id="sqft">
+      <option value="">Approximate sq ft</option>
+      <option>Under 400 sq ft</option>
+      <option>400 – 600 sq ft</option>
+      <option>600 – 900 sq ft</option>
+      <option>900 – 1,200 sq ft</option>
+      <option>1,200+ sq ft</option>
+      <option>Not sure</option>
+    </select>
+  </div>
+</div>
+<div class="field">
+  <label>Specific features or requirements?</label>
+  <div class="chips" id="featureChips">
+    <div class="chip" data-val="Private entrance">Private entrance</div>
+    <div class="chip" data-val="Full kitchen">Full kitchen</div>
+    <div class="chip" data-val="Laundry in unit">Laundry in unit</div>
+    <div class="chip" data-val="Accessible / ADA features">Accessible / ADA features</div>
+    <div class="chip" data-val="Solar / sustainable">Solar / sustainable</div>
+    <div class="chip" data-val="Rooftop deck">Rooftop deck</div>
+  </div>
+</div>
+<div class="field">
+  <label>Have you looked into ADU feasibility before?</label>
+  <select id="priorResearch">
+    <option value="">Select</option>
+    <option>No — this is my first step</option>
+    <option>I've done some online research</option>
+    <option>I've checked my city's ADU portal</option>
+    <option>I've spoken with another builder</option>
+    <option>I have architectural plans already</option>
+  </select>
+</div>
+<div class="btn-row">
+  <button class="btn btn-ghost" onclick="prevStep(2)">← Back</button>
+  <button class="btn btn-primary" onclick="nextStep(2)">Continue →</button>
+</div>
+<div class="error-msg" id="err2">Please fill in the required fields.</div>
+```
+
+  </div>
+
+  <!-- STEP 4: FINANCING -->
+
+  <div class="step-card" id="step3">
+    <div class="step-num">Step 4 of 5 — Financing</div>
+    <div class="step-title">How are you planning to fund this?</div>
+    <div class="step-desc">There are several options depending on your situation. No right or wrong answer.</div>
+
+```
+<div class="field">
+  <label>How do you plan to finance the ADU? *</label>
+  <div class="chips" id="financeChips">
+    <div class="chip" data-val="Cash / savings">Cash / savings</div>
+    <div class="chip" data-val="Home equity loan / HELOC">Home equity loan / HELOC</div>
+    <div class="chip" data-val="ADU-specific construction loan">ADU construction loan</div>
+    <div class="chip" data-val="Cash-out refinance">Cash-out refinance</div>
+    <div class="chip" data-val="Still exploring options">Still exploring options</div>
+    <div class="chip" data-val="Not sure">Not sure</div>
+  </div>
+</div>
+<div class="field">
+  <label>Approximate budget range?</label>
+  <select id="budget">
+    <option value="">Select range</option>
+    <option>Under $100k</option>
+    <option>$100k – $150k</option>
+    <option>$150k – $200k</option>
+    <option>$200k – $300k</option>
+    <option>$300k+</option>
+    <option>Not sure yet</option>
+  </select>
+</div>
+<div class="btn-row">
+  <button class="btn btn-ghost" onclick="prevStep(3)">← Back</button>
+  <button class="btn btn-primary" onclick="nextStep(3)">Continue →</button>
+</div>
+<div class="error-msg" id="err3">Please select how you plan to finance.</div>
+```
+
+  </div>
+
+  <!-- STEP 5: TIMELINE -->
+
+  <div class="step-card" id="step4">
+    <div class="step-num">Step 5 of 5 — Timeline</div>
+    <div class="step-title">When are you hoping to get started?</div>
+    <div class="step-desc">This helps us understand your urgency and how to prioritize your follow-up.</div>
+
+```
+<div class="field">
+  <label>Ideal start timeline *</label>
+  <div class="chips" id="timelineChips">
+    <div class="chip" data-val="ASAP — within 1 month">ASAP — within 1 month</div>
+    <div class="chip" data-val="1–3 months">1–3 months</div>
+    <div class="chip" data-val="3–6 months">3–6 months</div>
+    <div class="chip" data-val="6–12 months">6–12 months</div>
+    <div class="chip" data-val="Just exploring for now">Just exploring for now</div>
+  </div>
+</div>
+<div class="field">
+  <label>Anything else we should know?</label>
+  <textarea id="notes" placeholder="Any specific concerns, constraints, or questions..."></textarea>
+</div>
+<div class="btn-row">
+  <button class="btn btn-ghost" onclick="prevStep(4)">← Back</button>
+  <button class="btn btn-primary" onclick="nextStep(4)">See My Results →</button>
+</div>
+<div class="error-msg" id="err4">Please select your timeline.</div>
+```
+
+  </div>
+
+  <!-- CONTACT GATE -->
+
+  <div class="gate-card" id="gateCard">
+    <div class="step-num">Almost There — Unlock Your Report</div>
+    <div class="step-title">Your AI overview is ready</div>
+    <div class="step-desc">Enter your contact info to reveal your personalized ADU feasibility overview.</div>
+
+```
+<div class="gate-preview">
+  <div class="gate-preview-blur">
+    Based on your property details and goals, here is your personalized ADU feasibility overview...
+    Your lot appears to have strong potential for a detached ADU. Given the lot size and existing
+    structure, a garage conversion or new backyard unit could generate significant rental income...
+  </div>
+  <div class="gate-preview-overlay">
+    <div class="gate-lock-icon">🔒</div>
+    <div class="gate-lock-text">Enter your info to unlock</div>
+  </div>
+</div>
+
+<div class="field-row">
+  <div class="field">
+    <label>First Name *</label>
+    <input type="text" id="firstName" placeholder="Jane" autocomplete="given-name">
+  </div>
+  <div class="field">
+    <label>Last Name</label>
+    <input type="text" id="lastName" placeholder="Smith" autocomplete="family-name">
+  </div>
+</div>
+<div class="field">
+  <label>Email Address *</label>
+  <input type="email" id="leadEmail" placeholder="jane@example.com" autocomplete="email">
+</div>
+<div class="field">
+  <label>Phone Number</label>
+  <input type="tel" id="leadPhone" placeholder="(310) 555-0100" autocomplete="tel">
+</div>
+
+<div class="btn-row">
+  <button class="btn btn-primary" onclick="submitContact()" id="unlockBtn">Unlock My Report →</button>
+</div>
+<div class="error-msg" id="errGate">Please enter your name and email.</div>
+<div class="notify-banner" id="notifyBanner">✓ Your info has been received. Ron will be in touch soon!</div>
+<p style="font-size:0.72rem; color:var(--text-dim); margin-top:1rem; text-align:center;">
+  By submitting, you agree to be contacted by RC Remodeling & Construction. No spam, ever.
+</p>
+```
+
+  </div>
+
+  <!-- LOADING -->
+
+  <div class="loading-card" id="loadingCard">
+    <div class="loader"></div>
+    <div class="loading-title">Analyzing Your Property</div>
+    <div class="loading-sub">Our AI is reviewing your details…</div>
+    <div class="loading-steps">
+      <div class="loading-step" id="ls0">⬡ Reviewing property details</div>
+      <div class="loading-step" id="ls1">⬡ Checking ADU potential</div>
+      <div class="loading-step" id="ls2">⬡ Calculating feasibility score</div>
+      <div class="loading-step" id="ls3">⬡ Generating your personalized overview</div>
+    </div>
+  </div>
+
+  <!-- RESULT CARD -->
+
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <div class="result-score-row">
+        <div class="result-score-circle">
+          <div class="result-score-num" id="resultScore">—</div>
+          <div class="result-score-label">Score</div>
+        </div>
+        <div class="result-verdict">
+          <div class="result-verdict-tag">Your ADU Assessment</div>
+          <div class="result-verdict-title" id="resultVerdict">Reviewing…</div>
+        </div>
+      </div>
+    </div>
+    <div class="result-body" id="resultBody">
+      <!-- AI content injected here -->
+    </div>
+    <div class="result-cta">
+      <div class="result-cta-title">Ready to take the next step?</div>
+      <div class="result-cta-sub">Talk to Ron directly — free consultation, no pressure.</div>
+      <div class="result-contact-row">
+        <a class="result-contact-item" href="tel:+18186331025">📞 (818) 633-1025</a>
+        <a class="result-contact-item" href="mailto:RCremodeling4construction@gmail.com">✉ RCremodeling4construction@gmail.com</a>
+      </div>
+      <div class="btn-row" style="justify-content:center; margin-top:1.5rem;">
+        <a class="btn btn-primary" style="text-decoration:none; display:inline-block;" href="tel:+18186331025">Call Now</a>
+        <a class="btn btn-ghost" style="text-decoration:none; display:inline-block;" href="mailto:RCremodeling4construction@gmail.com">Send Email</a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /form-outer -->
+
+<!-- FOOTER -->
+
+<footer class="site-footer">
+  <div>RC Remodeling & Construction &nbsp;·&nbsp;
+    <a href="tel:+18186331025">(818) 633-1025</a> &nbsp;·&nbsp;
+    <a href="mailto:RCremodeling4construction@gmail.com">RCremodeling4construction@gmail.com</a>
+  </div>
+  <div style="margin-top:0.4rem;">Powered by Anthropic AI · Results are estimates only</div>
+</footer>
+
+<script>
+// ── STATE ──
+let apiKey = '';
+let currentStep = 0;
+const TOTAL_STEPS = 5;
+let formData = {};
+
+// ── INIT ──
+window.addEventListener('DOMContentLoaded', () => {
+  // Show modal
+  document.getElementById('apiModal').style.display = 'flex';
+  updateProgress(0);
+  initChips();
+});
+
+// ── API KEY ──
+function saveApiKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  const errEl = document.getElementById('apiKeyError');
+  if (!key.startsWith('sk-ant-') && !key.startsWith('sk-')) {
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+  apiKey = key;
+  document.getElementById('apiModal').style.display = 'none';
+}
+
+document.getElementById('apiKeyInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') saveApiKey();
+});
+
+// ── CHIPS ──
+function initChips() {
+  document.querySelectorAll('.chips').forEach(group => {
+    group.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const multi = group.dataset.multi === 'true';
+        if (!multi) {
+          group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+        }
+        chip.classList.toggle('selected');
+      });
+    });
+  });
+}
+
+function getChipValue(groupId) {
+  const selected = [];
+  document.querySelectorAll(`#${groupId} .chip.selected`).forEach(c => selected.push(c.dataset.val));
+  return selected.join(', ');
+}
+
+// ── PROGRESS ──
+function updateProgress(step) {
+  const pct = (step / TOTAL_STEPS) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  for (let i = 0; i <= 6; i++) {
+    const el = document.getElementById('pl' + i);
+    if (!el) continue;
+    el.classList.remove('active', 'done');
+    if (i === step) el.classList.add('active');
+    else if (i < step) el.classList.add('done');
+  }
+}
+
+// ── NAVIGATION ──
+function showCard(id) {
+  document.querySelectorAll('.step-card, .gate-card, .loading-card, .result-card').forEach(c => c.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function nextStep(step) {
+  const err = document.getElementById('err' + step);
+  if (err) err.style.display = 'none';
+
+  // Validate
+  if (step === 0) {
+    const addr = document.getElementById('address').value.trim();
+    const prop = document.getElementById('propType').value;
+    const own  = document.getElementById('ownership').value;
+    if (!addr || !prop || !own) { err.style.display = 'block'; return; }
+  }
+  if (step === 1) {
+    if (!getChipValue('goalChips')) { err.style.display = 'block'; return; }
+  }
+  if (step === 3) {
+    if (!getChipValue('financeChips')) { err.style.display = 'block'; return; }
+  }
+  if (step === 4) {
+    if (!getChipValue('timelineChips')) { err.style.display = 'block'; return; }
+  }
+
+  currentStep = step + 1;
+  updateProgress(currentStep);
+
+  if (currentStep < TOTAL_STEPS) {
+    showCard('step' + currentStep);
+  } else {
+    // Show contact gate
+    showCard('gateCard');
+    updateProgress(5);
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function prevStep(step) {
+  currentStep = step - 1;
+  updateProgress(currentStep);
+  showCard('step' + currentStep);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── CONTACT SUBMIT ──
+async function submitContact() {
+  const firstName = document.getElementById('firstName').value.trim();
+  const leadEmail = document.getElementById('leadEmail').value.trim();
+  const errEl = document.getElementById('errGate');
+
+  if (!firstName || !leadEmail) {
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  // Collect all form data
+  formData = {
+    address:       document.getElementById('address').value.trim(),
+    propType:      document.getElementById('propType').value,
+    ownership:     document.getElementById('ownership').value,
+    lotSize:       document.getElementById('lotSize').value,
+    structure:     getChipValue('structureChips'),
+    goal:          getChipValue('goalChips'),
+    rentTarget:    document.getElementById('rentTarget').value,
+    aduType:       getChipValue('aduTypeChips'),
+    bedrooms:      document.getElementById('bedrooms').value,
+    sqft:          document.getElementById('sqft').value,
+    features:      getChipValue('featureChips'),
+    priorResearch: document.getElementById('priorResearch').value,
+    finance:       getChipValue('financeChips'),
+    budget:        document.getElementById('budget').value,
+    timeline:      getChipValue('timelineChips'),
+    notes:         document.getElementById('notes').value.trim(),
+    firstName,
+    lastName:      document.getElementById('lastName').value.trim(),
+    email:         leadEmail,
+    phone:         document.getElementById('leadPhone').value.trim(),
+  };
+
+  // Show loading
+  showCard('loadingCard');
+  updateProgress(6);
+  animateLoadingSteps();
+
+  // Call Anthropic API for the report
+  try {
+    await generateReport();
+  } catch(e) {
+    console.error(e);
+    showFallbackResult();
+  }
+}
+
+// ── LOADING ANIMATION ──
+function animateLoadingSteps() {
+  const steps = ['ls0','ls1','ls2','ls3'];
+  steps.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.remove('active','done'); }
+  });
+  let i = 0;
+  const iv = setInterval(() => {
+    if (i > 0) {
+      const prev = document.getElementById(steps[i-1]);
+      if (prev) { prev.classList.remove('active'); prev.classList.add('done'); }
+    }
+    if (i < steps.length) {
+      const cur = document.getElementById(steps[i]);
+      if (cur) cur.classList.add('active');
+      i++;
+    } else {
+      clearInterval(iv);
+    }
+  }, 900);
+}
+
+// ── GENERATE REPORT via Anthropic API ──
+async function generateReport() {
+  const prompt = buildPrompt();
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1500,
+      system: `You are an expert ADU (Accessory Dwelling Unit) feasibility consultant for RC Remodeling & Construction in Southern California. 
+Your job is to analyze a homeowner's property details and generate a concise, helpful feasibility overview.
+
+ALWAYS respond with ONLY valid JSON — no markdown, no backticks, no preamble.
+
+Return this exact structure:
+{
+  "score": <integer 1-100>,
+  "verdict": "<short 5-10 word title>",
+  "overview": "<2-3 sentence overall assessment>",
+  "opportunities": "<2-3 sentences about the best ADU opportunities for this property>",
+  "considerations": "<2-3 sentences about key things to be aware of or potential challenges>",
+  "recommendedType": "<recommended ADU type and why, 1-2 sentences>",
+  "nextStep": "<personalized recommended next step, 1-2 sentences>",
+  "tags": ["<tag1>", "<tag2>", "<tag3>"]
+}`,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error?.message || 'API error ' + response.status);
+  }
+
+  const data = await response.json();
+  const raw = data.content.map(b => b.text || '').join('').trim();
+  const clean = raw.replace(/```json|```/g, '').trim();
+  const result = JSON.parse(clean);
+  renderResult(result);
+}
+
+// ── BUILD PROMPT ──
+function buildPrompt() {
+  const d = formData;
+  return `Please analyze this ADU lead and generate a feasibility overview:
+
+PROPERTY:
+- Address: ${d.address}
+- Type: ${d.propType}
+- Ownership: ${d.ownership}
+- Lot size: ${d.lotSize || 'Unknown'}
+- Existing structures: ${d.structure || 'None specified'}
+
+GOALS:
+- Primary goal: ${d.goal}
+- Rental income target: ${d.rentTarget || 'N/A'}
+- ADU type preference: ${d.aduType || 'Open'}
+
+PROJECT VISION:
+- Bedrooms: ${d.bedrooms || 'Not specified'}
+- Size: ${d.sqft || 'Not specified'}
+- Desired features: ${d.features || 'None specified'}
+- Prior research: ${d.priorResearch || 'Not specified'}
+
+FINANCING:
+- Method: ${d.finance}
+- Budget range: ${d.budget || 'Not specified'}
+
+TIMELINE: ${d.timeline}
+
+ADDITIONAL NOTES: ${d.notes || 'None'}
+
+LEAD CONTACT:
+- Name: ${d.firstName} ${d.lastName}
+- Email: ${d.email}
+- Phone: ${d.phone || 'Not provided'}`;
+}
+
+// ── RENDER RESULT ──
+function renderResult(r) {
+  document.getElementById('resultScore').textContent = r.score || '—';
+  document.getElementById('resultVerdict').textContent = r.verdict || 'Your ADU Overview';
+
+  const tags = (r.tags || []).map(t =>
+    `<span class="result-pill highlight">${t}</span>`
+  ).join('');
+
+  document.getElementById('resultBody').innerHTML = `
+    <div class="result-section">
+      <div class="result-section-title">Overview</div>
+      <div class="result-text">${r.overview || ''}</div>
+      ${tags ? `<div class="result-pills" style="margin-top:1rem;">${tags}</div>` : ''}
+    </div>
+    <div class="result-section">
+      <div class="result-section-title">Opportunities</div>
+      <div class="result-text">${r.opportunities || ''}</div>
+    </div>
+    <div class="result-section">
+      <div class="result-section-title">Key Considerations</div>
+      <div class="result-text">${r.considerations || ''}</div>
+    </div>
+    <div class="result-section">
+      <div class="result-section-title">Recommended Approach</div>
+      <div class="result-text">${r.recommendedType || ''}</div>
+    </div>
+    <div class="result-section">
+      <div class="result-section-title">Recommended Next Step</div>
+      <div class="result-text">${r.nextStep || ''}</div>
+    </div>
+    <div class="result-disclaimer">
+      This overview is an AI-generated estimate based on general ADU guidelines. Actual feasibility depends on 
+      local zoning, HOA rules, setback requirements, and site-specific conditions. A free consultation 
+      with RC Remodeling & Construction will give you a definitive assessment.
+    </div>
+  `;
+
+  showCard('resultCard');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── FALLBACK if API fails ──
+function showFallbackResult() {
+  document.getElementById('resultScore').textContent = '—';
+  document.getElementById('resultVerdict').textContent = 'Assessment Pending';
+  document.getElementById('resultBody').innerHTML = `
+    <div class="result-section">
+      <div class="result-section-title">We've Got Your Info</div>
+      <div class="result-text">
+        Thanks, ${formData.firstName}! We received your property details and will prepare a 
+        personalized ADU feasibility overview for you. Ron will follow up within 1 business day.
+      </div>
+    </div>
+    <div class="result-disclaimer">
+      In the meantime, feel free to call or email us directly — we're happy to answer any questions right away.
+    </div>
+  `;
+  showCard('resultCard');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
